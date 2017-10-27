@@ -8,4 +8,8 @@ DynamicScrollDirection essentially hacks around this limitation. It listens for 
 
 ## Installation
 
-Nothing fancy -- put the compiled binary somewhere sensible (e.g., `/usr/local/bin/DynamicScrollDirection`) and install the launchd plist file: `launchctl load com.snosrap.DynamicScrollDirection.plist`. This is admittedly pretty involved and a GUI would be a better idea.
+Nothing fancy -- put the compiled binary somewhere sensible (e.g., `/usr/local/bin/DynamicScrollDirection`) and install the launchd plist file: `launchctl load com.snosrap.DynamicScrollDirection.plist`.
+
+## Alternatives
+
+If you'd prefer a GUI, check out [Scroll Reverser](https://pilotmoon.com/scrollreverser/), which is also [open source](https://github.com/pilotmoon/Scroll-Reverser).
