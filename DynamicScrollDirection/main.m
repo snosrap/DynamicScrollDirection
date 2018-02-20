@@ -25,6 +25,8 @@ void SetNaturalScroll(BOOL naturalScroll) {
     [NSDistributedNotificationCenter.defaultCenter postNotificationName:@"SwipeScrollDirectionDidChangeNotification" object:nil];
 }
 
+IOHIDManagerRef hidManager;
+
 void DeviceMatchingCallback(void *context, IOReturn result, void *sender, IOHIDDeviceRef device) {
     NSLog(@"Attached %@", IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductKey)));
     SetNaturalScroll(NO);
@@ -32,13 +34,14 @@ void DeviceMatchingCallback(void *context, IOReturn result, void *sender, IOHIDD
 
 void DeviceRemovalCallback(void *context, IOReturn result, void *sender, IOHIDDeviceRef device) {
     NSLog(@"Removed %@", IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductKey)));
-    SetNaturalScroll(YES);
+    NSSet *set = (__bridge NSSet *)IOHIDManagerCopyDevices(hidManager);
+    SetNaturalScroll(set.count == 0);
 }
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        IOHIDManagerRef hidManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDManagerOptionNone);
-        IOHIDManagerSetDeviceMatching(hidManager, (CFMutableDictionaryRef)@{@(kIOProviderClassKey):@(kIOHIDDeviceKey),
+        hidManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDManagerOptionNone);
+        IOHIDManagerSetDeviceMatching(hidManager, (CFDictionaryRef)@{@(kIOProviderClassKey):@(kIOHIDDeviceKey),
                                                     @(kIOHIDTransportKey):@(kIOHIDTransportUSBValue),
                                                     @(kIOHIDDeviceUsagePageKey):@(kHIDPage_GenericDesktop),
                                                     @(kIOHIDDeviceUsageKey):@(kHIDUsage_GD_Mouse)});
