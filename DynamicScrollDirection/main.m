@@ -34,8 +34,12 @@ void DeviceMatchingCallback(void *context, IOReturn result, void *sender, IOHIDD
 
 void DeviceRemovalCallback(void *context, IOReturn result, void *sender, IOHIDDeviceRef device) {
     NSLog(@"Removed %@", IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductKey)));
-    NSSet *set = (__bridge NSSet *)IOHIDManagerCopyDevices(hidManager);
-    SetNaturalScroll(set.count == 0);
+    CFSetRef devices = IOHIDManagerCopyDevices(hidManager);
+    Boolean deviceInList = CFSetContainsValue(devices, device);
+    CFIndex deviceCount = CFSetGetCount(devices);
+    CFIndex remainingDeviceCount = deviceCount - ((int)deviceInList);
+    CFRelease(devices);
+    SetNaturalScroll(remainingDeviceCount <= 0);
 }
 
 int main(int argc, const char * argv[]) {
